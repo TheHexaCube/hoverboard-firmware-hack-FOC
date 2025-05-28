@@ -248,6 +248,38 @@ int main(void) {
     }
   #endif
 
+  HAL_Delay(100);
+  batVoltageCalib = batVoltage * BAT_CALIB_REAL_VOLTAGE / BAT_CALIB_ADC;
+  // initial battery voltage; low beeps for 10 volts, short beeps for 1 volt
+  uint8_t tens_volts = batVoltageCalib / 1000;                     // Tens of volts (e.g., 4 from 42.0)
+  uint8_t single_volts = (batVoltageCalib % 1000) / 100;           // Single volts (e.g., 2 from 42.0)
+  uint8_t hundreds_mV = (batVoltageCalib % 100) / 10;              // Hundreds of millivolts (e.g., 0 from 42.0)
+
+  HAL_Delay(500);
+
+  for (uint8_t i = 0; i < tens_volts; i++) { // Beep for tens of volts
+    beepShort(40);
+    HAL_Delay(200);
+  }
+  
+  for (uint8_t i = 0; i < single_volts; i++) { // Beep for single volts
+    beepShort(24);
+    HAL_Delay(200);
+  }
+
+  HAL_Delay(500);
+
+  for (uint8_t i = 0; i < hundreds_mV; i++) { // Beep for hundreds of millivolts
+    beepShort(10);
+    HAL_Delay(200);
+  }
+
+  HAL_Delay(500);
+
+
+
+
+
   while(1) {
     if (buzzerTimer - buzzerTimer_prev > 16*DELAY_IN_MAIN_LOOP) {   // 1 ms = 16 ticks buzzerTimer
 
